@@ -1,0 +1,24 @@
+# === Core ML ===
+# Install PyTorch with CUDA 12.1 support via:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+torch
+torchvision
+timm
+
+# === Computer Vision ===
+opencv-python
+Pillow
+mss
+
+# === Chess / Engine ===
+python-chess
+stockfish
+
+# === Data Generation ===
+cairosvg
+
+# === Utilities ===
+numpy
+scikit-learn
+tqdm
+matplotlib

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensure Content Security Policy allows our local API calls -->
+    <meta http-equiv="Content-Security-Policy"
+        content="script-src 'self' 'unsafe-inline'; connect-src 'self' http://127.0.0.1:5050 http://127.0.0.1:11434">
+    <title>Chess AI Overlay</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Drag region so the borderless window can be moved -->
+    <div class="drag-bar">
+        <div class="drag-title">
+            <!-- Back arrow: hidden on splash, visible in main app -->
+            <button id="back-btn" class="back-btn hidden" title="Back to mode select">&#8592;</button>
+            <span class="chess-icon">♞</span>
+            <span>Chess AI Engine. Creator: Sahil Pai</span>
+        </div>
+        <div class="window-controls">
+            <button id="min-btn">_</button>
+            <button id="close-btn">✕</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+
+        <!-- SPLASH SCREEN -->
+        <div id="splash-screen" class="splash-screen">
+            <div class="logo-container animation-container">
+                <div class="css-board anim-board"></div>
+                <img src="knight.png" class="anim-piece anim-knight" />
+                <img src="rook.png" class="anim-piece anim-rook" />
+            </div>
+            <h1 class="splash-title">Chess AI</h1>
+            <h2 class="splash-subtitle">Select Mode</h2>
+
+            <div class="splash-buttons">
+                <button id="btn-cheat" class="splash-btn cheat-btn">
+                    <span class="btn-icon"></span> Cheat Engine
+                </button>
+                <button id="btn-coach" class="splash-btn coach-btn">
+                    <span class="btn-icon"></span> Coach
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN APP (Hidden initially) -->
+        <div id="main-app" class="main-app hidden">
+            <div class="header">
+                <div class="color-toggle">
+                    <button id="btn-white" class="active"><span class="btn-icon">♔</span> White</button>
+                    <button id="btn-black"><span class="btn-icon">♚</span> Black</button>
+                </div>
+
+                <div class="platform-container">
+                    <select id="platform-select" class="platform-select">
+                        <option value="chess.com">Chess.com</option>
+                        <option value="lichess">Lichess</option>
+                    </select>
+                </div>
+
+                <div class="toggle-container">
+                    <label class="switch">
+                        <input type="checkbox" id="auto-poll" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-label">Auto</span>
+                </div>
+            </div>
+
+            <div class="main-display">
+                <div class="eval-section">
+                    <div class="eval-label">♕ EVALUATION</div>
+                    <div class="eval-score" id="eval-score">0.0</div>
+                </div>
+
+                <div class="move-section">
+                    <div class="eval-label">🎯 BEST MOVE</div>
+                    <div class="best-move" id="best-move">---</div>
+                    <!-- Hint button: only shown in coach mode, reveals best move -->
+                    <button id="btn-hint" class="btn btn-secondary hidden">
+                        <i data-lucide="eye" class="btn-icon"></i> Reveal Hint
+                    </button>
+                </div>
+
+                <!-- Coach Feedback: always visible in coach mode -->
+                <div id="coach-ui" class="coach-ui-container hidden">
+                    <div id="coach-feedback" class="feedback-neutral">Waiting for your first move...</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="scan-btn" class="scan-button">♜ ANALYZE BOARD</button>
+            </div>
+
+            <div class="status-bar" id="status-bar">
+                Waiting for server...
+            </div>
+        </div> <!-- End of main-app -->
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>

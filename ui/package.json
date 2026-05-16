@@ -1,0 +1,14 @@
+{
+  "name": "chess-ai-overlay",
+  "version": "1.0.0",
+  "description": "Transparent chess engine overlay",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Antigravity",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^42.0.1"
+  }
+}
