@@ -24,7 +24,50 @@ The project comes with a sleek, transparent Electron overlay that stays on top o
 
 ---
 
-## Getting Started
+## 📦 Quick Install & Setup (For Friends / Non-Technical Users)
+
+If you just want to run the pre-compiled overlay app without touching any code or terminal commands, follow this simple checklist:
+
+### 1. Download & Install
+1. Go to the [Releases](https://github.com/sapai5/chessAI/releases) page of this repository.
+2. Under the latest release (e.g., `v1.0.0`), download the installer file: **`ChessAI Setup 1.0.0.exe`**.
+3. Double-click the downloaded file to install and launch. On first launch, the app will automatically download the vision weights (`model.pt`) from GitHub and save them.
+
+---
+
+### 2. Configure the AI Chess Coach (API Key)
+
+The overlay comes with an AI Chess Coach that analyzes your game in real-time. You can choose how the coach explains your moves:
+
+#### 🔹 Option 1: Premium Cloud Coach (Recommended)
+To use the advanced Gemini Coach model, you can supply your own API key:
+1. Open Notepad and create a new text file named `.env`.
+2. Add your Gemini API key inside it exactly like this:
+   ```env
+   GEMINI_API_KEY=your_actual_gemini_api_key_here
+   ```
+3. Copy this `.env` file and paste it directly into the **`resources`** folder of your installed application. By default, on Windows, this folder is located at:
+   `C:\Users\<YourUsername>\AppData\Local\Programs\chess-ai-overlay\resources\`
+   *(Tip: Press `Win + R`, paste `%localappdata%\Programs\chess-ai-overlay\resources` into the box, and press Enter to open this folder instantly!)*
+
+#### 🔹 Option 2: Automatic Offline Fallback (No Setup Required)
+If you don't have an API key or prefer to run offline, **do nothing!** The app is smart enough to handle this:
+- It will automatically fall back to a built-in, zero-dependency strategic coach. 
+- It uses local Stockfish data and board positions to describe your move strategically without calling any external servers. This is 100% private, works offline, and requires zero configuration!
+
+---
+
+### 3. How to Play
+1. Launch **ChessAI** from your Start Menu or Desktop shortcut.
+2. Open Chess.com or Lichess in your browser.
+3. Make sure the game is displayed on your **primary monitor** and the chess board is fully visible (not minimized or covered by other windows).
+4. Click **Coach Mode** or **Cheat Mode** on the overlay, select your piece color, and play! The overlay will automatically scan your screen and show you evaluations and hints.
+
+---
+
+## 🛠 Developer Setup & CLI Usage
+
+If you are a developer and want to run the project from source or modify the models:
 
 ### 1. Requirements
 
@@ -58,7 +101,7 @@ If the model is already trained and Stockfish is present, you can launch the AI 
    npm start
    ```
 
-The Electron app will automatically boot up `server.py` in the background and present a transparent overlay window. Keep a Chess.com green-themed board open and visible on your screen. The UI will auto-scan and show you the best move!
+The Electron app will automatically boot up `server.py` in the background and present a transparent overlay window. Keep a Chess.com walnut/green-themed board open and visible on your screen. The UI will auto-scan and show you the best move!
 
 ### 3. Testing the Backend Components
 
@@ -77,6 +120,7 @@ You can test individual pieces of the AI pipeline from the CLI:
   *(Outputs JSON with the FEN string and the calculated Stockfish move).*
 
 ---
+
 
 ## Advanced: Training the Model from Scratch
 
@@ -100,6 +144,3 @@ Check the accuracy per piece and generate a confusion matrix.
 ```bash
 python -m train.evaluate --data data --weights weights/model.pt
 ```
-
-## Credits
-Built by Antigravity.
