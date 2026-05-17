@@ -14,6 +14,7 @@ Usage:
 """
 
 import os
+import sys
 from pathlib import Path
 import chess
 import chess.engine
