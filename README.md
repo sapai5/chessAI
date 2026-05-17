@@ -32,6 +32,7 @@ If you just want to run the pre-compiled overlay app without touching any code o
 1. Go to the [Releases](https://github.com/sapai5/chessAI/releases) page of this repository.
 2. Under the latest release (e.g., `v1.0.0`), download the installer file: **`ChessAI Setup 1.0.0.exe`**.
 3. Double-click the downloaded file to install and launch. On first launch, the app will automatically download the vision weights (`model.pt`) from GitHub and save them.
+4. When the blue SmartScreen warning appears, click on the "More info" link. A new button called "Run anyway" will appear at the bottom. Click "Run anyway".
 
 ---
 
