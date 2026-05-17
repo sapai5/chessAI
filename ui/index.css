@@ -300,20 +300,81 @@ input:checked + .slider:before { transform: translateX(16px); background-color: 
     word-break: break-word;
 }
 
-.feedback-neutral {
-    color: var(--text-primary);
-    background-color: var(--accent-mint) !important;
+/* Premium Move Quality Badges */
+.coach-badge-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 2px;
 }
 
-.feedback-negative {
+.coach-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    border: 2.5px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 2px 2px 0px var(--border-color);
+    text-transform: uppercase;
     color: var(--text-primary);
-    background-color: var(--danger) !important;
+}
+
+.badge-excellent {
+    background-color: var(--accent-green); /* Pastel Mint Green */
+}
+
+.badge-good {
+    background-color: var(--accent-blue); /* Pastel Blue */
+}
+
+.badge-inaccuracy {
+    background-color: #FFE3A8; /* Pastel Gold */
+}
+
+.badge-mistake {
+    background-color: #FFB7B2; /* Pastel Coral */
+}
+
+.badge-blunder {
+    background-color: var(--danger); /* Pastel Red */
+    color: #fff;
+    text-shadow: 1px 1px 0px var(--border-color);
+}
+
+.badge-neutral {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 #btn-hint {
-    font-size: 14px;
-    padding: 8px 16px;
+    background-color: var(--accent-blue);
+    border: 2.5px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--border-color);
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     width: 100%;
+    margin-top: 12px;
+}
+
+#btn-hint:hover {
+    background-color: #8AD1F5; /* slightly deeper pastel blue */
+}
+
+#btn-hint:active {
+    box-shadow: 0px 0px 0px var(--border-color);
+    transform: translate(2px, 2px);
 }
 
 .eval-score.positive { color: var(--text-primary); }

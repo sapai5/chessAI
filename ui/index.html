@@ -82,14 +82,17 @@
                     <div class="eval-label">🎯 BEST MOVE</div>
                     <div class="best-move" id="best-move">---</div>
                     <!-- Hint button: only shown in coach mode, reveals best move -->
-                    <button id="btn-hint" class="btn btn-secondary hidden">
-                        <i data-lucide="eye" class="btn-icon"></i> Reveal Hint
+                    <button id="btn-hint" class="hidden">
+                        <span class="btn-icon">👁</span> <span class="btn-text">Reveal Hint</span>
                     </button>
                 </div>
 
                 <!-- Coach Feedback: always visible in coach mode -->
                 <div id="coach-ui" class="coach-ui-container hidden">
-                    <div id="coach-feedback" class="feedback-neutral">Waiting for your first move...</div>
+                    <div id="coach-feedback">Waiting for your first move...</div>
+                    <div id="coach-badge-container" class="coach-badge-container hidden">
+                        <span id="coach-badge" class="coach-badge">GOOD MOVE</span>
+                    </div>
                 </div>
             </div>
 
