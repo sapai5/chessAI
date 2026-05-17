@@ -10,21 +10,23 @@ Usage:
 
 import torch
 import torch.nn as nn
-import timm
+import torchvision.models as models
 
 NUM_CLASSES = 13
 
 
 def build_model(pretrained: bool = True) -> nn.Module:
     """
-    Load ResNet-18 from timm with ImageNet pre-trained weights,
+    Load ResNet-18 from torchvision with ImageNet pre-trained weights,
     replace the final fully-connected layer with a 13-class head.
     """
-    model = timm.create_model(
-        "resnet18",
-        pretrained=pretrained,
-        num_classes=NUM_CLASSES,
-    )
+    if pretrained:
+        weights = models.ResNet18_Weights.DEFAULT
+        model = models.resnet18(weights=weights)
+    else:
+        model = models.resnet18()
+        
+    model.fc = nn.Linear(model.fc.in_features, NUM_CLASSES)
     return model
 
 
