@@ -197,9 +197,8 @@ app.whenReady().then(() => {
 
     if (!fs.existsSync(weightsPath)) {
         createLoadingWindow();
-        loadingWindow.once('show', () => {
-            downloadWeights();
-        });
+        // Start downloading immediately to bypass race conditions of the show event!
+        downloadWeights();
     } else {
         startPythonServer();
         createWindow();
