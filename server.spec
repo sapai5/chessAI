@@ -21,6 +21,7 @@ a = Analysis(
         'PIL.Image',
         'torch',
         'torchvision',
+        'timm',
     ],
     hookspath=[],
     hooksconfig={},
