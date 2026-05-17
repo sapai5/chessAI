@@ -23,21 +23,28 @@ def _find_stockfish_path() -> str:
     """
     Resolve Stockfish binary path:
     1. STOCKFISH_PATH environment variable
-    2. stockfish pip package (auto-downloads binary)
-    3. System PATH ('stockfish' command)
+    2. Check side-by-side in production (parent directory of sys.executable)
+    3. Look in the local project root folder (for development)
+    4. System PATH
     """
     # 1. Env var override
     env_path = os.environ.get("STOCKFISH_PATH")
     if env_path:
         return env_path
 
-    # 2. Look in the project root folder (we downloaded it here)
+    # 2. Check side-by-side in production
+    if getattr(sys, 'frozen', False):
+        production_sf = Path(sys.executable).parent / "stockfish.exe"
+        if production_sf.exists():
+            return str(production_sf)
+
+    # 3. Look in the project root folder (for development)
     project_root = Path(__file__).parent.parent
     local_sf = project_root / "stockfish.exe"
     if local_sf.exists():
         return str(local_sf)
 
-    # 3. System PATH
+    # 4. System PATH
     return "stockfish"
 
 

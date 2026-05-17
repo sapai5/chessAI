@@ -52,10 +52,10 @@ jobs:
       - name: Verify compiled server.exe
         shell: powershell
         run: |
-          if (Test-Path "dist/server.exe") {
-              Write-Host "Successfully compiled server.exe sidecar!"
+          if (Test-Path "dist/server/server.exe") {
+              Write-Host "Successfully compiled server directory sidecar!"
           } else {
-              Write-Error "Failed to compile server.exe"
+              Write-Error "Failed to compile server directory"
               exit 1
           }
 

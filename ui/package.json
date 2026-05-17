@@ -28,8 +28,12 @@
     },
     "extraResources": [
       {
-        "from": "../dist/server.exe",
-        "to": "server.exe"
+        "from": "../dist/server",
+        "to": "server"
+      },
+      {
+        "from": "../stockfish.exe",
+        "to": "server/stockfish.exe"
       }
     ],
     "files": [

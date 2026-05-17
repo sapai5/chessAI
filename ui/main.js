@@ -151,7 +151,7 @@ function startPythonServer() {
 
     if (app.isPackaged) {
         // Packaged production environment - spawn compiled server.exe sidecar
-        pythonExecutable = path.join(process.resourcesPath, 'server.exe');
+        pythonExecutable = path.join(process.resourcesPath, 'server', 'server.exe');
     } else {
         // Local development environment - spawn local python environment
         pythonExecutable = path.join(__dirname, '..', 'venv', 'Scripts', 'python.exe');
