@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, net } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 const { spawn } = require('child_process');
 
 let mainWindow;
@@ -32,36 +33,78 @@ function createLoadingWindow() {
     loadingWindow.loadFile(path.join(__dirname, 'renderer', 'loading.html'));
 }
 
-function downloadWeights() {
-    if (!fs.existsSync(weightsDir)) {
-        fs.mkdirSync(weightsDir, { recursive: true });
-    }
+function downloadWeightsHelper(url, dest, callback, progressCallback) {
+    const fileStream = fs.createWriteStream(dest);
+    
+    // Use a standard browser user agent to ensure AWS S3 does not restrict or block the connection
+    const options = {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+        }
+    };
 
-    const fileStream = fs.createWriteStream(weightsPath);
-    let downloadedBytes = 0;
-    let totalBytes = 0;
+    const request = https.get(url, options, (response) => {
+        // Recursively handle standard HTTP Redirects (301, 302, 307, 308)
+        if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+            fileStream.close();
+            try {
+                fs.unlinkSync(dest);
+            } catch (e) {}
+            console.log(`Redirecting to: ${response.headers.location}`);
+            return downloadWeightsHelper(response.headers.location, dest, callback, progressCallback);
+        }
 
-    console.log(`Starting download from ${WEIGHTS_URL}...`);
-    const request = net.request(WEIGHTS_URL);
+        if (response.statusCode !== 200) {
+            fileStream.close();
+            try {
+                fs.unlinkSync(dest);
+            } catch (e) {}
+            return callback(new Error(`Server responded with status code ${response.statusCode}`));
+        }
 
-    request.on('response', (response) => {
-        totalBytes = parseInt(response.headers['content-length'], 10) || 0;
-        console.log(`Download response received. Total size: ${totalBytes} bytes`);
+        const totalBytes = parseInt(response.headers['content-length'], 10) || 0;
+        let downloadedBytes = 0;
 
         response.on('data', (chunk) => {
             downloadedBytes += chunk.length;
             fileStream.write(chunk);
-
             if (totalBytes > 0) {
                 const percent = Math.round((downloadedBytes / totalBytes) * 100);
-                if (loadingWindow && !loadingWindow.isDestroyed()) {
-                    loadingWindow.webContents.send('download-progress', percent);
-                }
+                progressCallback(percent);
             }
         });
 
         response.on('end', () => {
             fileStream.end();
+            callback(null);
+        });
+    });
+
+    request.on('error', (err) => {
+        fileStream.close();
+        try {
+            if (fs.existsSync(dest)) {
+                fs.unlinkSync(dest);
+            }
+        } catch (e) {}
+        callback(err);
+    });
+}
+
+function downloadWeights() {
+    if (!fs.existsSync(weightsDir)) {
+        fs.mkdirSync(weightsDir, { recursive: true });
+    }
+
+    console.log(`Starting download from ${WEIGHTS_URL}...`);
+    
+    downloadWeightsHelper(WEIGHTS_URL, weightsPath, (err) => {
+        if (err) {
+            console.error("Failed to download weights:", err);
+            if (loadingWindow && !loadingWindow.isDestroyed()) {
+                loadingWindow.webContents.send('download-error', err.message);
+            }
+        } else {
             console.log("Weights downloaded successfully.");
             setTimeout(() => {
                 if (loadingWindow) {
@@ -70,18 +113,12 @@ function downloadWeights() {
                 startPythonServer();
                 createWindow();
             }, 1000);
-        });
-    });
-
-    request.on('error', (err) => {
-        fileStream.end();
-        console.error("Failed to download weights:", err);
+        }
+    }, (percent) => {
         if (loadingWindow && !loadingWindow.isDestroyed()) {
-            loadingWindow.webContents.send('download-error', err.message);
+            loadingWindow.webContents.send('download-progress', percent);
         }
     });
-
-    request.end();
 }
 
 function createWindow() {
@@ -142,7 +179,7 @@ function startOllama() {
     const ollamaPath = path.join(process.env.LOCALAPPDATA || process.env.APPDATA, 'Programs', 'Ollama', 'ollama.exe');
     try {
         ollamaProcess = spawn(ollamaPath, ['run', 'qwen2.5:1.5b'], { shell: false });
-        
+
         ollamaProcess.stdout.on('data', (data) => {
             console.log(`[Ollama]: ${data}`);
         });
