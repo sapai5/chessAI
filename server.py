@@ -3,7 +3,11 @@ import sys
 sys.stdout.reconfigure(line_buffering=True)  # flush print() immediately when running as subprocess
 
 # Custom zero-dependency .env loader to read GEMINI_API_KEY from the project root
-env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if getattr(sys, 'frozen', False):
+    app_dir = os.path.dirname(sys.executable)
+else:
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(app_dir, ".env")
 if os.path.exists(env_path):
     try:
         with open(env_path, "r", encoding="utf-8") as f:

@@ -1,0 +1,84 @@
+name: Build and Release Chess AI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-size: '3.11'
+          python-version: '3.11'
+
+      - name: Download and Setup Stockfish
+        shell: powershell
+        run: |
+          Write-Host "Downloading latest Stockfish for Windows..."
+          Invoke-WebRequest -Uri "https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-windows-x86-64-avx2.zip" -OutFile "stockfish.zip"
+          Write-Host "Extracting Stockfish..."
+          Expand-Archive -Path "stockfish.zip" -DestinationPath "stockfish_extracted"
+          Write-Host "Locating Stockfish binary..."
+          $exe = Get-ChildItem -Path "stockfish_extracted" -Filter "*.exe" -Recurse | Select-Object -First 1
+          if ($exe) {
+              Copy-Item -Path $exe.FullName -Destination "stockfish.exe"
+              Write-Host "Successfully setup stockfish.exe in root."
+          } else {
+              Write-Error "Failed to locate Stockfish executable inside the zip file."
+              exit 1
+          }
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller flask flask-cors chess numpy opencv-python mss pillow torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
+
+      - name: Compile Python Server via PyInstaller
+        run: |
+          pyinstaller server.spec
+
+      - name: Verify compiled server.exe
+        shell: powershell
+        run: |
+          if (Test-Path "dist/server.exe") {
+              Write-Host "Successfully compiled server.exe sidecar!"
+          } else {
+              Write-Error "Failed to compile server.exe"
+              exit 1
+          }
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Node Dependencies
+        working-directory: ui
+        run: |
+          npm ci
+
+      - name: Compile Electron Installer
+        working-directory: ui
+        run: |
+          npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload & Publish Github Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ui/dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

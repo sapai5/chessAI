@@ -27,8 +27,17 @@ from vision.classifier import PieceClassifier
 from engine.fen_builder import build_fen, validate_fen, repair_labels
 from engine.stockfish_client import StockfishClient
 
-WEIGHTS_PATH = Path(__file__).parent.parent / "weights" / "model.pt"
-LOG_DIR = Path(__file__).parent.parent / "logs"
+if getattr(sys, 'frozen', False):
+    # Packaged production environment (always use user APPDATA to avoid permission issues)
+    import os
+    appdata = Path(os.environ.get("APPDATA") or os.path.expanduser("~"))
+    app_dir = appdata / "ChessAI"
+    WEIGHTS_PATH = app_dir / "weights" / "model.pt"
+    LOG_DIR = app_dir / "logs"
+else:
+    # Local development environment
+    WEIGHTS_PATH = Path(__file__).parent.parent / "weights" / "model.pt"
+    LOG_DIR = Path(__file__).parent.parent / "logs"
 
 # ── Logging setup ─────────────────────────────────────────────────────────────
 LOG_DIR.mkdir(exist_ok=True)

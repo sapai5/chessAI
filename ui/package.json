@@ -4,11 +4,33 @@
   "description": "Transparent chess engine overlay",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "author": "Antigravity",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^42.0.1"
+    "electron": "^42.0.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.chessai.overlay",
+    "productName": "ChessAI",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "extraResources": [
+      {
+        "from": "../dist/server.exe",
+        "to": "server.exe"
+      }
+    ],
+    "files": [
+      "**/*",
+      "!dist/**/*"
+    ]
   }
 }
