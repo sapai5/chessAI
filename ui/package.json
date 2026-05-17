@@ -9,6 +9,10 @@
   },
   "author": "Antigravity",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sapai5/chessAI.git"
+  },
   "devDependencies": {
     "electron": "^42.0.1",
     "electron-builder": "^24.13.3"
