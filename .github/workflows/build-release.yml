@@ -67,7 +67,7 @@ jobs:
       - name: Install Node Dependencies
         working-directory: ui
         run: |
-          npm ci
+          npm install
 
       - name: Compile Electron Installer
         working-directory: ui
